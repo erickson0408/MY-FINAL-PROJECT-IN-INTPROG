@@ -1,0 +1,221 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+}
+
+header {
+    background-color: #ff6f61;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* Login Form Styles */
+.login-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #ff3b2e;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #ff6f61;
+}
+
+h3 {
+    margin-top: 40px;
+    color: #333;
+}
+
+/* Product Card Styles */
+.product-card {
+    display: inline-block;
+    width: 30%;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #fff;
+    padding: 15px;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.product-card h3 {
+    margin: 10px 0;
+    color: #333;
+}
+
+.product-card p {
+    color: #777;
+}
+
+.product-card .price {
+    font-size: 1.2em;
+    color: #ff6f61;
+    font-weight: bold;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ff3b2e;
+}
+
+/* Log Out Button */
+.dashboard-container button {
+    margin-top: 20px;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer a {
+    color: #ff6f61;
+    text-decoration: none;
+}
+
+/* Responsive Design with Media Queries */
+
+/* For Mobile Devices */
+@media only screen and (max-width: 768px) {
+    .product-card {
+        width: 100%;
+    }
+
+    .login-form {
+        width: 90%;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    footer {
+        font-size: 12px;
+    }
+}
+
+/* For Tablet Devices */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .product-card {
+        width: 48%;
+    }
+
+    .login-form {
+        width: 80%;
+    }
+}
+
+/* For Larger Desktop Screens */
+@media only screen and (min-width: 1200px) {
+    .product-card {
+        width: 30%;
+    }
+}
+
+/* ----------------------------- */
+/* Centered Modal Styles */
+/* ----------------------------- */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* FIXED – full viewport height */
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+@keyframes fadeIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
