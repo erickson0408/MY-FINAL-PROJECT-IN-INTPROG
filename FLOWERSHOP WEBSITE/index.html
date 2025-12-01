@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prestige Florals</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* CENTERED MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Welcome to Prestige Florals Flower Shop</h1>
+    <p>Your one-stop shop for fresh flowers and beautiful bouquets</p>
+</header>
+
+<!-- Login Form -->
+<div class="login-form">
+    <h2>Login to Your Account</h2>
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <input type="password" id="password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+    </form>
+    <div id="message" class="message"></div>
+
+    <p>Don't have an account? 
+        <a href="#" id="openRegister">Create Account</a>
+    </p>
+</div>
+
+<!-- Registration Modal -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <h2>Create Account</h2>
+
+        <form id="registerForm">
+            <input type="text" id="regUsername" placeholder="Username" required>
+            <input type="text" id="regName" placeholder="Full Name" required>
+            <input type="email" id="regEmail" placeholder="Email" required>
+            <input type="text" id="regAddress" placeholder="Address" required>
+            <input type="password" id="regPassword" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+
+        <p id="registerMsg"></p>
+
+        <button id="closeRegister">Close</button>
+    </div>
+</div>
+
+<script>
+/* ========================== LOGIN SCRIPT (MOCKAPI) ========================== */
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const messageDiv = document.getElementById('message');
+
+    const apiURL = "https://6926e47626e7e41498fc03c3.mockapi.io/users/users";
+
+    fetch(apiURL)
+        .then(res => res.json())
+        .then(users => {
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                messageDiv.textContent = "Login successful! Redirecting...";
+                messageDiv.style.color = "green";
+
+                // Save logged-in user to localStorage
+                localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1500);
+            } else {
+                messageDiv.textContent = "Invalid email or password.";
+                messageDiv.style.color = "red";
+            }
+        })
+        .catch(err => {
+            console.error("Login error:", err);
+            messageDiv.textContent = "Server error. Try again later.";
+            messageDiv.style.color = "red";
+        });
+});
+
+/* ====================== OPEN / CLOSE REGISTER MODAL ====================== */
+document.getElementById('openRegister').onclick = () => {
+    document.getElementById('registerModal').style.display = "flex";
+};
+
+document.getElementById('closeRegister').onclick = () => {
+    document.getElementById('registerModal').style.display = "none";
+};
+
+/* ========================== REGISTER SCRIPT (MOCKAPI) ========================== */
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('regUsername').value.trim();
+    const fullname = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const address = document.getElementById('regAddress').value.trim();
+    const password = document.getElementById('regPassword').value.trim();
+    const regMsg = document.getElementById('registerMsg');
+
+    const apiURL = "https://6926e47626e7e41498fc03c3.mockapi.io/users/users";
+
+    fetch(apiURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, fullname, name: fullname, email, address, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        regMsg.textContent = "Account created successfully!";
+        regMsg.style.color = "green";
+        console.log("Saved to MockAPI:", data);
+
+        // Clear form after success
+        document.getElementById('registerForm').reset();
+    })
+    .catch(err => {
+        regMsg.textContent = "Error creating account!";
+        regMsg.style.color = "red";
+        console.error(err);
+    });
+});
+</script>
+
+</body>
+</html>
