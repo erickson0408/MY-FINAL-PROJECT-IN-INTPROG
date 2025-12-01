@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Prestige Florals</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+    body { background:#f2f2f2; color:#333; }
+
+    /* Navbar */
+    .navbar { display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, #ff6f61, #ff3b2e); padding:15px 30px; color:#fff; }
+    .navbar h1 { font-size:1.8rem; }
+    .navbar .user-info { display:flex; align-items:center; gap:10px; }
+    .navbar .username { font-weight:600; background: rgba(255,255,255,0.2); padding:5px 10px; border-radius:5px; }
+    .navbar button { background-color:#fff; color:#ff3b2e; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:600; transition:0.3s ease; }
+    .navbar button:hover { background-color:#ffe5e0; }
+
+    /* Hero */
+    .hero { text-align:center; padding:50px 20px; background:#fff url('https://picsum.photos/1200/400?blur') center/cover no-repeat; color:#fff; position:relative; border-radius:0 0 20px 20px; margin-bottom:40px; }
+    .hero::after { content:''; position:absolute; inset:0; background: rgba(0,0,0,0.4); border-radius:0 0 20px 20px; }
+    .hero h2, .hero p { position:relative; z-index:1; }
+    .hero h2 { font-size:2.5rem; margin-bottom:10px; }
+    .hero p { font-size:1.2rem; }
+
+    /* Section Title */
+    .section-title { text-align:center; font-size:2rem; color:#ff3b2e; margin-bottom:30px; font-weight:600; }
+
+    /* Product Cards */
+    .product-cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:25px; padding:0 30px 50px 30px; }
+    .product-card { background:#fff; border-radius:15px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.1); transition:transform 0.3s ease, box-shadow 0.3s ease; }
+    .product-card:hover { transform:translateY(-5px); box-shadow:0 12px 24px rgba(0,0,0,0.15); }
+    .product-card img { width:100%; height:180px; object-fit:cover; }
+    .product-card .card-body { padding:15px; text-align:center; }
+    .product-card h3 { font-size:1.2rem; margin-bottom:8px; color:#ff6f61; }
+    .product-card p { font-size:0.95rem; color:#555; margin-bottom:10px; }
+    .product-card .price { font-weight:600; color:#ff3b2e; margin-bottom:15px; display:block; font-size:1.1rem; }
+    .product-card button { padding:10px 20px; background:linear-gradient(90deg,#ff6f61,#ff3b2e); border:none; color:#fff; border-radius:8px; cursor:pointer; font-weight:600; transition:0.3s ease; }
+    .product-card button:hover { background:linear-gradient(90deg,#ff3b2e,#ff6f61); }
+
+    /* Cart Window */
+    .cart-window { position:fixed; top:80px; right:20px; width:320px; max-height:400px; background:#fff; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.2); padding:20px; overflow-y:auto; display:none; z-index:1000; }
+    .cart-window h3 { text-align:center; margin-bottom:10px; color:#ff3b2e; }
+    .cart-window li { display:flex; justify-content:space-between; margin-bottom:8px; }
+    .cart-window button#close-cart-btn { margin-top:10px; width:100%; }
+
+    /* Modal */
+    .modal { position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:1001; }
+    .modal-content { background:#fff; padding:20px; width:320px; border-radius:10px; text-align:center; }
+    .modal-content input { width:90%; margin:8px 0; padding:8px; border-radius:5px; border:1px solid #ccc; }
+    .modal-content button { padding:10px 15px; border:none; border-radius:5px; cursor:pointer; font-weight:600; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h1>Prestige Florals</h1>
+    <div class="user-info">
+      <span class="username" id="username">User</span>
+      <button id="cart-btn">Cart (<span id="cart-count">0</span>)</button>
+      <button id="checkout-btn">Checkout</button>
+      <button id="logout-btn">Log Out</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Welcome Back!</h2>
+    <p>Check out our beautiful collections of fresh flowers</p>
+  </section>
+
+  <!-- Products Section -->
+  <h2 class="section-title">Our Best Sellers</h2>
+  <div class="product-cards" id="product-cards"></div>
+
+  <!-- Cart Window -->
+  <div id="cart-window" class="cart-window">
+    <h3>Your Cart</h3>
+    <ul id="cart-items"></ul>
+    <p id="cart-total">Total: ₱0.00</p>
+    <button id="close-cart-btn">Close</button>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <h2>My Profile</h2>
+      <form id="profileForm">
+        <input type="text" id="profileUsername" placeholder="Username" required>
+        <input type="text" id="profileFullname" placeholder="Full Name" required>
+        <input type="email" id="profileEmail" placeholder="Email" required>
+        <input type="text" id="profileAddress" placeholder="Address" required>
+        <button type="submit">Update Profile</button>
+      </form>
+      <button id="deleteAccountBtn" style="background-color:#ff3b2e; color:white; margin-top:10px;">Delete Account</button>
+      <button id="closeProfileModal" style="margin-top:10px;">Close</button>
+      <p id="profileMsg"></p>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <h2>Order Placed!</h2>
+      <p id="checkoutMsg"></p>
+      <button id="closeCheckoutModal">Close</button>
+    </div>
+  </div>
+
+<script>
+/* ==========================================================
+   1. LOAD LOGGED-IN USER
+=========================================================== */
+const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if(!loggedUser) window.location.href="index.html";
+document.getElementById("username").textContent = loggedUser.name;
+
+/* ==========================================================
+   2. LOG OUT BUTTON
+=========================================================== */
+document.getElementById("logout-btn").addEventListener("click", ()=>{
+  localStorage.removeItem("loggedInUser");
+  window.location.href="index.html";
+});
+
+/* ==========================================================
+   3. CART SYSTEM
+=========================================================== */
+let cart = JSON.parse(localStorage.getItem('cart'))||[];
+function updateCartCount(){ document.getElementById('cart-count').textContent = cart.length; }
+function updateCartWindow(){
+  const cartItemsUl = document.getElementById('cart-items');
+  const cartTotalP = document.getElementById('cart-total');
+  cartItemsUl.innerHTML='';
+  let total=0;
+  cart.forEach((item,index)=>{
+    const li=document.createElement('li');
+    li.textContent = `${item.name} - ₱${item.price}`;
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent='Remove';
+    removeBtn.addEventListener('click',()=>{
+      cart.splice(index,1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      updateCartWindow();
+    });
+    li.appendChild(removeBtn);
+    cartItemsUl.appendChild(li);
+    total+=item.price;
+  });
+  cartTotalP.textContent=`Total: ₱${total.toFixed(2)}`;
+}
+document.getElementById('cart-btn').addEventListener('click',()=>{ 
+  const cw=document.getElementById('cart-window'); 
+  cw.style.display = cw.style.display==='block'?'none':'block';
+});
+document.getElementById('close-cart-btn').addEventListener('click',()=>{ 
+  document.getElementById('cart-window').style.display='none';
+});
+
+/* ==========================================================
+   4. PRODUCTS
+=========================================================== */
+const products=[
+  {id:1,name:"Rose Bouquet",price:500,desc:"Beautiful fresh red roses for your loved ones.",image:"images/Rose.jpg"},
+  {id:2,name:"Lily Bouquet",price:730.50,desc:"Elegantly fragrant lilies for any occasion.",image:"images/Lily.jpg"},
+  {id:3,name:"Tulip Bouquet",price:1000.06,desc:"Bright and colorful tulips to brighten your day.",image:"images/Tulip.jpg"},
+  {id:4,name:"Sunflower Bouquet",price:650,desc:"Cheerful sunflowers to bring sunshine to any room.",image:"images/Sunflower.jpg"}
+];
+const productContainer=document.getElementById('product-cards');
+products.forEach(item=>{
+  const card=document.createElement('div');
+  card.classList.add('product-card');
+  card.setAttribute('data-name',item.name);
+  card.setAttribute('data-price',item.price);
+  card.innerHTML=`
+    <img src="${item.image}" alt="${item.name}">
+    <div class="card-body">
+      <h3>${item.name}</h3>
+      <p>${item.desc}</p>
+      <span class="price">₱${item.price}</span>
+      <button class="add-to-cart-btn">Add to Cart</button>
+    </div>
+  `;
+  productContainer.appendChild(card);
+});
+document.querySelectorAll('.add-to-cart-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const card=this.closest('.product-card');
+    const name=card.getAttribute('data-name');
+    const price=parseFloat(card.getAttribute('data-price'));
+    cart.push({name,price});
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    updateCartWindow();
+    alert(`${name} added to cart!`);
+  });
+});
+
+/* ==========================================================
+   5. CHECKOUT (MODAL WITH TOTAL AMOUNT)
+=========================================================== */
+const checkoutModal = document.getElementById("checkoutModal");
+const checkoutMsg = document.getElementById("checkoutMsg");
+const deliveryFee = 60;
+
+document.getElementById('checkout-btn').addEventListener('click', () => {
+  if(cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  // Calculate total
+  let itemsTotal = cart.reduce((sum, item) => sum + item.price, 0);
+  let totalAmount = itemsTotal + deliveryFee;
+
+  const address = loggedUser.address || "your address";
+  checkoutMsg.textContent = `Your items are on the way to your delivery address. Please prepare the total amount: ₱${totalAmount.toFixed(2)}. Delivery Address: ${address}`;
+
+  checkoutModal.style.display = "flex";
+
+  // Clear cart after checkout
+  cart = [];
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  updateCartWindow();
+});
+document.getElementById("closeCheckoutModal").addEventListener("click",()=>{ checkoutModal.style.display="none"; });
+
+/* ==========================================================
+   6. PROFILE MODAL
+=========================================================== */
+const profileModal=document.getElementById("profileModal");
+const profileForm=document.getElementById("profileForm");
+const profileMsg=document.getElementById("profileMsg");
+const deleteAccountBtn=document.getElementById("deleteAccountBtn");
+
+// Profile button in navbar
+const profileBtn=document.createElement('button');
+profileBtn.textContent="My Profile";
+profileBtn.style.marginLeft="10px";
+document.querySelector(".user-info").insertBefore(profileBtn, document.getElementById("cart-btn"));
+
+// Open modal
+profileBtn.addEventListener("click",()=>{
+  profileModal.style.display="flex";
+  document.getElementById("profileUsername").value = loggedUser.username;
+  document.getElementById("profileFullname").value = loggedUser.fullname;
+  document.getElementById("profileEmail").value = loggedUser.email;
+  document.getElementById("profileAddress").value = loggedUser.address;
+});
+
+// Close modal
+document.getElementById("closeProfileModal").addEventListener("click",()=>{ profileModal.style.display="none"; });
+
+// Update API profile
+profileForm.addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const updatedUser={
+    username: document.getElementById("profileUsername").value.trim(),
+    fullname: document.getElementById("profileFullname").value.trim(),
+    name: document.getElementById("profileFullname").value.trim(),
+    email: document.getElementById("profileEmail").value.trim(),
+    address: document.getElementById("profileAddress").value.trim(),
+    password: loggedUser.password
+  };
+  const apiURL=`https://6926e47626e7e41498fc03c3.mockapi.io/users/users/${loggedUser.id}`;
+  fetch(apiURL,{ method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(updatedUser)})
+    .then(res=>res.json())
+    .then(data=>{
+      profileMsg.textContent="Profile updated successfully!";
+      profileMsg.style.color="green";
+      localStorage.setItem("loggedInUser", JSON.stringify(data));
+      document.getElementById("username").textContent = data.name;
+      setTimeout(()=>profileModal.style.display="none",1500);
+    })
+    .catch(err=>{
+      console.error(err);
+      profileMsg.textContent="Error updating profile.";
+      profileMsg.style.color="red";
+    });
+});
+
+// Delete API profile
+deleteAccountBtn.addEventListener("click",()=>{
+  if(confirm("Are you sure you want to delete your account? This action cannot be undone!")){
+    const apiURL=`https://6926e47626e7e41498fc03c3.mockapi.io/users/users/${loggedUser.id}`;
+    fetch(apiURL,{ method:"DELETE" })
+      .then(res=>{
+        alert("Your account has been deleted.");
+        localStorage.removeItem("loggedInUser");
+        window.location.href="index.html";
+      })
+      .catch(err=>{
+        console.error(err);
+        alert("Error deleting account.");
+      });
+  }
+});
+
+// Init cart display
+updateCartCount();
+updateCartWindow();
+</script>
+</body>
+</html>
